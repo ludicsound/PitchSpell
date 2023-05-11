@@ -372,4 +372,19 @@ console.log(pitchClassSet.spell());
 
     return primeForm;
   }
+
+  getintervalVector() {
+    const set = this.transposeToC(this.mostCompactOrdering(this.set.map(midiNote => midiNote % 12)));
+    let vector = [0, 0, 0, 0, 0, 0];
+
+    for(let i = 0; i < set.length - 1; i++) {
+      for(let j = i + 1; j < set.length; j++) {
+        let interval = (set[j] - set[i]) % 12; // Get the interval
+        if (interval > 6) interval = 12 - interval; // Invert intervals larger than 6
+        vector[interval - 1]++; // Subtract 1 because our vector is 0-indexed
+      }
+    }
+
+    return vector;
+  }
 }

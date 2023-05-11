@@ -176,13 +176,19 @@ function getNotes(clef) {
 	return notes;
 }
 
-function textMarkup (note, markup) {
+function textMarkup (note, markup, position) {
 	const noteBoundingBox = note.getBoundingBox();
-	const x = noteBoundingBox.x + 8;
-	const y = noteBoundingBox.y - 30;
+	let x, y;
+	if(position === 'below') {
+		x = noteBoundingBox.x + 4;
+		y = noteBoundingBox.y + 60;
+	} else {
+		x = noteBoundingBox.x + 8;
+		y = noteBoundingBox.y - 30;
+	}
 
 	fill(0);
-	textSize(24);
+	textSize(20);
 	textAlign(CENTER, CENTER);
 	text(markup, x, y);
 }
@@ -201,18 +207,23 @@ function drawNotes (notes, stave, clef){
 			.format([voice], width - 100);
     voice.draw(context, stave);
 
+		const set = new PitchClassSet(Object.keys(activeNotes).map(Number));
+
 		notes.forEach((note, index) => {
       if (!note.isRest() && !(notes.length > 1 && index === (notes.length - 1))) {
         const key = note.keys[0];
         const pitchClassName = key.substring(0, key.length - 2);
         // Use p5.js to draw the text label
-				textMarkup(note, pitchClassName);
+				textMarkup(note, pitchClassName, 'above');
       }
 			//draw Prime Form for PcSet
-			else if (!note.isRest() && clef === "treble") {
-				const pcSet = new PitchClassSet(Object.keys(activeNotes).map(Number))
-				textMarkup(note, "(" + pcSet.getPrimeForm().join('') + ")");
+			else if (notes.length > 1 && index === (notes.length - 1) && clef === "treble") {
+				textMarkup(note, "(" + set.getPrimeForm().join('') + ")", 'above');
       }
+			//draw IntervalVector for PcSet
+			else if (notes.length > 1 && index === (notes.length - 1) && clef === "bass") {
+				textMarkup(note, "" + set.getintervalVector().join('') + "", 'below');
+			}
     });
   }
 }
