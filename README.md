@@ -1,2 +1,2 @@
 # PitchSpell
-Realtime music notation utility for accurate pitch-spelling and pitch-class set representation in prime form
+Realtime music notation utility for accurate pitch-spelling and prime form detection of a pitch-class set
