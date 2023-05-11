@@ -1,6 +1,7 @@
 class PitchClassSet {
+  //constructor accepts one argument, an array of MIDI note values
   constructor(set) {
-    this.set = set;
+    this.set = set.map(midiNote => midiNote % 12);
     this.matrixL = {
       c: ['Cbb', 'Cb', 'C', 'C#', 'C##'],
       d: ['Dbb', 'Db', 'D', 'D#', 'D##'],
@@ -22,6 +23,13 @@ class PitchClassSet {
     };
   }
 
+  //This pitch-spelling algorithm is an implementation of…
+  //Bora, Uzay, Barış Tezel, and Alper Vahaplar. “An Algorithm for Spelling the Pitches of Any Musical Scale.” Information Sciences, September 1, 2018. https://doi.org/10.1016/j.ins.2018.09.015.
+  // Example usage
+  /*
+  const pitchClassSet = new PitchClassSet([60, 62, 64, 65, 67, 69, 71]); // C D E F G A B
+  console.log(pitchClassSet.spell());
+  */
   spell() {
     // do stage 1
     let paths = this.s1_columnsPath();
@@ -129,7 +137,7 @@ class PitchClassSet {
   }
 
   s1_columnsPath() {
-    const pitchClasses = this.set.map((midi) => midi % 12);
+    const pitchClasses = this.set;
     console.log(pitchClasses);
     let bestPaths = [];
     let maxDifferentiationScore = -Infinity;
@@ -282,13 +290,7 @@ class PitchClassSet {
     return bestPaths;
   }
 
-// Example usage
-/*
-const pitchClassSet = new PitchClassSet([60, 62, 64, 65, 67, 69, 71]); // C D E F G A B
-console.log(pitchClassSet.spell());
-*/
-
-// Prime Form calculations
+//Prime form helper functions
   mostCompactOrdering(pitchClasses) {
     const sortedPitchClasses = [...pitchClasses].sort((a, b) => a - b);
     let minRange = Infinity;
@@ -343,8 +345,8 @@ console.log(pitchClassSet.spell());
     }
   }
 
-  getPrimeForm() {
-    const pitchClasses = this.set.map(midiNote => midiNote % 12);
+  primeForm() {
+    const pitchClasses = this.set;
     const uniquePitchClasses = Array.from(new Set(pitchClasses)).sort((a, b) => a - b);
 
     // Step 2: Determine normal form
@@ -373,8 +375,9 @@ console.log(pitchClassSet.spell());
     return primeForm;
   }
 
-  getintervalVector() {
-    const set = this.transposeToC(this.mostCompactOrdering(this.set.map(midiNote => midiNote % 12)));
+//Generate an Interval Vector for this.set
+  intervalVector() {
+    const set = this.transposeToC(this.mostCompactOrdering(this.set));
     let vector = [0, 0, 0, 0, 0, 0];
 
     for(let i = 0; i < set.length - 1; i++) {

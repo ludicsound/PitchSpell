@@ -179,17 +179,21 @@ function getNotes(clef) {
 function textMarkup (note, markup, position) {
 	const noteBoundingBox = note.getBoundingBox();
 	let x, y;
-	if(position === 'below') {
-		x = noteBoundingBox.x + 4;
-		y = noteBoundingBox.y + 60;
-	} else {
-		x = noteBoundingBox.x + 8;
+	if(position === 'pf') {
+		x = 20;
+		y = 400;
+	} else if (position === 'iv') {
+		x = 20;
+		y = 430;
+	}
+	else {
+		x = noteBoundingBox.x + 2;
 		y = noteBoundingBox.y - 30;
 	}
 
 	fill(0);
 	textSize(20);
-	textAlign(CENTER, CENTER);
+	textAlign(LEFT, CENTER);
 	text(markup, x, y);
 }
 
@@ -218,11 +222,11 @@ function drawNotes (notes, stave, clef){
       }
 			//draw Prime Form for PcSet
 			else if (notes.length > 1 && index === (notes.length - 1) && clef === "treble") {
-				textMarkup(note, "(" + set.getPrimeForm().join('') + ")", 'above');
+				textMarkup(note, "Prime Form: (" + set.primeForm().join('') + ")", 'pf');
       }
 			//draw IntervalVector for PcSet
 			else if (notes.length > 1 && index === (notes.length - 1) && clef === "bass") {
-				textMarkup(note, "" + set.getintervalVector().join('') + "", 'below');
+				textMarkup(note, "Interval Vector: " + set.intervalVector().join('') + "", 'iv');
 			}
     });
   }
